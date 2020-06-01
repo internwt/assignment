@@ -1,8 +1,10 @@
+require("dotenv").config();
+
 module.exports = {
-  HOST: "ruby.db.elephantsql.com",
-  USER: "bxaghfsg",
-  PASSWORD: "ed_EeJYdXgsFPUZs7SidFLxQ2iRCuI-S",
-  DB: "bxaghfsg",
+  HOST: process.env.HOST,
+  USER: process.env.USER,
+  PASSWORD: process.env.PASSWORD,
+  DB: process.env.DB,
   dialect: "postgres",
   pool: {
     max: 5,
