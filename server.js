@@ -1,28 +1,32 @@
-(async () => {
-  const db = require('./database/database-config');
-  const { initDB } = require('./database/initDB.js');
-  const express = require('express');
-  const app = express();
-  const port = process.env.PORT || 3000;
-  const router = require('./router/router');
+const express = require("express");
+const cors = require("cors");
+const port = 3000;
+const app = express();
+const db = require("./app/models");
 
+// app.use(cors(corsOptions));
+app.use(express.json());
 
-  try {
-    await initDB();
-    await db.authenticate()
-    console.log(`connection has been established successfully`);
+// user routes
+require("./app/routes/userRoutes")(app);
 
-  } catch (e) {
-    console.log(e);
+// project routes
+require("./app/routes/projectRoutes")(app);
 
-  }
+// task routes
+require("./app/routes/taskRoutes")(app);
 
-  app.use('/api', router);
+// default route
+app.get("/*", (req, res) => {
+  res.json({
+    message: "route not in used, please go to /api/[users,tasks,projects]",
+  });
+});
 
-  //create all tables
-  await db.sync();
-
-  app.listen(port, () => {
-    console.log(`app now running on: localhost:${port}`);
-  })
-})();
+// set port, listen for requests
+const PORT = process.env.PORT || port;
+db.sequelize.sync({ force: false }).then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on localhost:${PORT}.`);
+  });
+});
